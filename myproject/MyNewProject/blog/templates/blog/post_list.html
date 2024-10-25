@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <h1>All Posts</h1>
+  <ul>
+    {% for post in posts %}
+      <li>
+        <h2>{{ post.title }}</h2>
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" width="300"
+             onerror="this.onerror=null; this.src='{% static 'images/placeholder.png' %}'">
+        <p>{{ post.content }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% endblock %}
+<form method="GET" action="{% url 'post_list' %}">
+    <input type="text" name="q" value="{{ query }}" placeholder="Search...">
+    <button type="submit">Search</button>
+</form>
+
+<ul>
+    {% for post in page_obj %}
+        <li><a href="{% url 'post_detail' post.id %}">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1&q={{ query }}">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}&q={{ query }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
